@@ -6,3 +6,6 @@ This was not hosted on any cloud platform, a local cronjob used to run the scrip
 The script <code>cowin_appointment_check.py</code> makes the api call and sends an email. 
 Take note that only district_code and subscribes list and any dependencies(restricted pin/ restricted hospital codes) for filtering needs to be filled in.
 <code>vacc_check.sh</code> is the file executed by the local cronjob which logs the result of the previous operation that includes status_code(200/403 etc..) and time and name of the center last pinged to a file.
+
+Email content\
+![vaccination slot status](covid_vacc_email.png)
