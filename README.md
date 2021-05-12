@@ -1,5 +1,5 @@
 # CovidVaccinationEnquiry
-A script to enquire when a covid vaccination slot opens up at a place / set of places in India and to send an email to the subscribers.\
+A script to enquire when a covid vaccination slot opens up at a place / set of places in India over the next 7 days and to send an email to the subscribers.\
 The script uses subscriber groups that have in common a district, set of pincodes if requried, age and preference for hospital(enter hospital code) if required and a list of email.\
 This was not hosted on any cloud platform, a local cronjob used to run the script every minute to make calls to the api opened by the Govt. [API Setu](https://apisetu.gov.in/public/marketplace/api/cowin)
 
