@@ -165,7 +165,7 @@ def get_centers(subscriber_idx):
                 clinic['cost'] = str(clinics['fee_type'])
 
                 for sessions in clinics['sessions']:
-                    if(sessions['min_age_limit'] <= int(group['age']) and sessions['available_capacity'] > 0):
+                    if(sessions['min_age_limit'] == int(group['age']) and sessions['available_capacity'] > 0):
                         clinic['date_slots'].append(
                             sessions['date']+'('+str(sessions['available_capacity'])+')')
                         if(clinics['pincode'] not in temp):
