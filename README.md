@@ -8,7 +8,7 @@ The script uses subscriber groups that have in common
   *   future_date if required
   *   preference for hospital(enter hospital code) if required
   *   list of emails
-  \
+  
 
 This was not hosted on any cloud platform, a local cronjob used to run the script every minute to make calls to the api opened by the Govt. [API Setu](https://apisetu.gov.in/public/marketplace/api/cowin)
 
