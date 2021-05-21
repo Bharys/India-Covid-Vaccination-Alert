@@ -25,6 +25,7 @@ subscribers=[
 	'district':'mysore',
 	'to_email':[],#add email
 	'restricted_pin':mys_restricted_pin,
+    'restricted_hospital':[],#add hospital center code
 	'name':'Mysuru City',
 	'dose':1
 	},
@@ -40,7 +41,15 @@ subscribers=[
 	'restricted_pin':jayanagara_pin,
 	'name':'Jayanagara, Bengaluru',
 	'dose':2
-	}	
+	},
+    {'age':45,
+	'district':'mysore',
+	'to_email':[],
+	'name':'Mysore City',
+	'restricted_pin':mys_restricted_pin,
+	'date':'29-06-2021',
+	'dose':2
+	}
 ]
 
 headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36",
