@@ -8,4 +8,4 @@ Take note that only district_code and subscribes list and any dependencies(restr
 <code>vacc_check.sh</code> is the file executed by the local cronjob which logs the result of the previous operation that includes status_code(200/403 etc..) and time and name of the center last pinged to a file.
 
 Email content\
-<img src="./covid_vacc_email.png" height=300px>
+<img src="./covid_vacc_email_dose.png" height=300px>
