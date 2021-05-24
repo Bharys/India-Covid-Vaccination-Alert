@@ -1,5 +1,5 @@
 import requests
-import datetime,pprint
+import datetime,pprint,time
 import smtplib, ssl
 
 from email.mime.multipart import MIMEMultipart
@@ -81,7 +81,13 @@ table_style = """
 					}
                 </style>
 			"""
-				
+
+def get_from_date(s_idx):
+	group = subscribers[s_idx]
+	ret_date = curr_date
+	if('date' in group and (time.strptime(group['date'],'%d-%m-%Y') > time.strptime(curr_date,'%d-%m-%Y'))):ret_date = group['date']
+	return ret_date	
+
 def send_email(email_content,place_name,to_email=[],age=18,dose=1):
 	
 	try:
@@ -136,7 +142,7 @@ def send_email(email_content,place_name,to_email=[],age=18,dose=1):
 def apply_filter(s_idx,c_idx):
 	group = subscribers[s_idx]
 	district_id = district_code[group['district']]
-	date = group['date'] if 'date' in group else curr_date
+	date = get_from_date(s_idx)
 	clinic_data = master_data[(district_id,date)][c_idx]
 	pin_check = False
 	hospital_check = False
@@ -161,7 +167,7 @@ def get_centers(subscriber_idx):
 	temp = {}
 	
 	dist_payload['district_id'] = district_code[group['district']]
-	dist_payload['date'] = group['date'] if('date' in group) else curr_date
+	dist_payload['date'] = get_from_date(subscriber_idx)
 	master_data_key = (dist_payload['district_id'],dist_payload['date'])
 	
 	if(master_data_key not in master_data): 
