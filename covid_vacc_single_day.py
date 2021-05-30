@@ -190,9 +190,8 @@ def get_centers(subscriber_idx):
 						clinic['date_slots'].append("{}({})-{}".format(sessions['date'],num_slots,sessions['vaccine']))
 						if(clinics['pincode'] not in temp):temp[clinics['pincode']] = []
 				if(len(clinic['date_slots'])>0):
-					if('vaccine_fees' in clinics):					
-						for vaccine_type in clinics['vaccine_fees']:
-							clinic['cost']+="<br>"+str(vaccine_type['vaccine'])+'-'+str(vaccine_type['fee'])
+					if('fee' in clinics):
+						clinic['cost'] += "<br> {}-{}".format(clinics['vaccine'],clinics['fee'])
 					temp[clinics['pincode']].append(clinic)
 
 	except Exception as e:
