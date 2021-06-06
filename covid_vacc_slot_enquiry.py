@@ -61,8 +61,8 @@ headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KH
 
 smtpServer = "smtp.gmail.com"
 port = 587
-from_email = 'royath04@gmail.com'
-pswd = 'CommunisT'
+from_email = ''
+pswd = ''
 context = ssl.create_default_context()
 
 dist_url = "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict"
@@ -109,7 +109,7 @@ def send_email(email_content, place_name, to_email=[], age=18, dose=1):
 			intro = f'Vaccine for age <strong>{age}+, Dose{dose}</strong> in <strong>{place_name}</strong>  available at {len(email_content)} pincode(s) as on {curr_time} {curr_day}'
 			msg = MIMEMultipart('alternative')
 			msg['Subject'] = f"Vaccine {age}+ Dose{dose}, {place_name}"
-			msg['From'] = 'royath04@gmail.com'
+			msg['From'] = ''
 			table_contents = ''
 			sorted_keys = sorted(email_content)
 			
@@ -119,10 +119,7 @@ def send_email(email_content, place_name, to_email=[], age=18, dose=1):
 					for center in center_list:
 						col_name = f"<td>{center['name']}</td>"
 						col_pin = f"<td>{center['pin_code']}</td>"
-						col_slot = ''
-						for info in center['date_slots']:
-							col_slot += str(info)+'<br>'
-						col_slot = f"<td>{col_slot}</td>"
+						col_slot = f"<td>{center['date_slots']}</td>"
 						col_cost = f"<td>{center['cost']}</td>"
 
 						row = f'<tr>{col_name}{col_pin}{col_slot}{col_cost}</tr>'
@@ -156,26 +153,29 @@ def send_email(email_content, place_name, to_email=[], age=18, dose=1):
 def apply_filter(s_idx, c_idx,date):
 	
 	group = subscribers[s_idx]
+	age = int(group['age'])
 	district_id = district_code[group['district']]
 	clinic_data = master_data[(district_id, date)][c_idx]
 	
 	pin_check = False
 	hospital_check = False
 	vaccine_check = False
+	age_check = clinic_data['min_age_limit'] == age
 	
-	if('restricted_pin' not in group or clinic_data['pincode'] in group['restricted_pin']): pin_check = True
-	if('restricted_hospital' not in group or clinic_data['center_id'] in group['restricted_hospital']): hospital_check = True
-	if('vaccine' not in group or clinic_data['vaccine'].lower() == group['vaccine'].lower()):vaccine_check = True
-	
-	return pin_check and hospital_check and vaccine_check
+	if(age_check):		
+
+		if('restricted_pin' not in group or clinic_data['pincode'] in group['restricted_pin']): pin_check = True
+		if('restricted_hospital' not in group or clinic_data['center_id'] in group['restricted_hospital']): hospital_check = True
+		if('vaccine' not in group or clinic_data['vaccine'].lower() == group['vaccine'].lower()):vaccine_check = True
+		
+	return age_check and pin_check and hospital_check and vaccine_check
 
 
 def get_slot_capacity(subscriber_idx, clinic_day_data):
 
 	group = subscribers[subscriber_idx]
 	dose_num = group['dose']
-	age = int(group['age'])
-	slot_capacity = int(clinic_day_data['available_capacity']) if clinic_day_data['min_age_limit'] == age else 0
+	slot_capacity = int(clinic_day_data['available_capacity'])
 	if(slot_capacity > 0):
 		if(('available_capacity_dose1' or 'available_capacity_dose2') in clinic_day_data):
 			slot_capacity = int(clinic_day_data.get('available_capacity_dose'+str(dose_num), 0))
@@ -207,24 +207,25 @@ def get_centers(subscriber_idx):
 				continue
 
 		clinics_data = master_data[master_data_key]
+
 		for clinic_idx, clinics in enumerate(clinics_data):
-			if(apply_filter(subscriber_idx,clinic_idx,date)):
-				
+
+			filter_res = apply_filter(subscriber_idx,clinic_idx,date)
+			num_slots = get_slot_capacity(subscriber_idx, clinics)
+			
+			if(filter_res and num_slots > 0):		
+
 				clinic = {}
 				clinic['name'] = clinics['name']
 				clinic['pin_code'] = clinics['pincode']
-				clinic['date_slots'] = []
-				clinic['cost'] = str(clinics['fee_type'])
+				clinic['date_slots'] = f"{clinics['date']}({num_slots})-{ clinics['vaccine']}"
+				clinic['cost'] = str(clinics['fee_type'])				
 				
-				num_slots = get_slot_capacity(subscriber_idx, clinics)				
-				if(num_slots >	0):
-					if(clinics['pincode'] not in temp): temp[clinics['pincode']] = []
-					clinic['date_slots'].append(f"{clinics['date']}({num_slots})-{ clinics['vaccine']}")
-				
-				if(len(clinic['date_slots']) > 0):
-					if(clinic['cost'].lower()=='paid' and 'fee' in clinics):
-						clinic['cost'] += f"<br> {clinics['vaccine']} - {clinics['fee']}"
-					temp[clinics['pincode']].append(clinic)
+				if(clinics['pincode'] not in temp):temp[clinics['pincode']] = []
+				if(clinic['cost'].lower()=='paid'):clinic['cost'] += f"<br> {clinics['vaccine']}-{clinics['fee']}"
+
+				temp[clinics['pincode']].append(clinic)
+
 	return temp
 
 try:
@@ -244,4 +245,4 @@ try:
 				f"at {curr_time} {curr_day}, no. of centers:{len(dist_res)}")
 		else:print('Dose info not available/incorrect')
 except Exception as e:
-	print("Error:",e)	
+	print("Error:",e)
