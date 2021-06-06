@@ -24,7 +24,7 @@ pavan_pin = [560001, 560011, 560069]
 kadur_pin = [577548]
 hoshangabad_pin = [461001]
 
-district_code = {'mysore': 266, 'chamarajanagar': 271,'bbmp': 294}
+district_code = {'mysore': 266, 'chamarajanagar': 271,'bbmp': 294, 'chikkamagaluru': 273, 'hoshangabad': 360}
 dist_payload = {'district_id': district_code['mysore'], 'date': curr_day}
 
 subscribers = [
