@@ -1,6 +1,6 @@
 # India Covid vaccination slot e-mail alert
 A script to enquire when a covid vaccination slot opens up at a place / set of places in India and to send an email to the subscribers.\
-The script <code>covid_vacc_slot_enquiry.py</code> uses subscriber groups that have in common 
+The script <code>vaccine_check_variable_frequency.py</code> uses subscriber groups that have in common 
   * district code
   *  set of pincodes if requried
   *   age
@@ -9,10 +9,12 @@ The script <code>covid_vacc_slot_enquiry.py</code> uses subscriber groups that h
   *   preference for hospital(enter hospital code) if required
   *   list of emails
   *   choice of vaccine if required
-  
+  * scale ( if requrired for adjusting the polling frequency for a particular group)
+  By default script polls once every <b>20seconds</b>. 'scale' parameter can be used to adjust the polling frequency. E.g if it's set to 3 for a group, data for that group will polled once in a minute.
 
-This was not hosted on any cloud platform, a local cronjob used to run the script every minute to make calls to the api opened by the Govt. [API Setu](https://apisetu.gov.in/public/marketplace/api/cowin)
+This was not hosted on any cloud platform, script  <code>vaccine_check_variable_frequency.py</code> is executed locally from the terminal and calls the [API Setu](https://apisetu.gov.in/public/marketplace/api/cowin) opened by the Govt.
 
+**Other Scripts as cron job**
 The script <code>covid_vacc_slot_enquiry.py</code> makes the api calls and sends an email if any slots open up in the next 'n' days, where n=3 by default.
 
 Another script <code>cowin_appointment_check.py</code> makes the api calls and sends an email if any slots open up in the next 7 days(fixed). This is working script but there is a delay in fetching the data compared to the former script and is used only for locations where the demand is low.
